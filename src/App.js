@@ -4,13 +4,24 @@ import HomePage from "./containers/HomePage";
 import CharacterPage from "./containers/CharacterPage";
 import "./App.css";
 import Header from './components/Header';
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles((theme) => ({
+  error: {
+    color: 'antiquewhite',
+    textDecoration: 'none',
+    display: 'flex',
+    justifyContent: 'center'
+  }
+}));
 
 function NoMatch() {
+  const classes = useStyles();
   let location = useLocation();
 
   return (
     <div>
-      <h3>
+      <h3 className={classes.error}>
         No match for <code>{location.pathname}</code>
       </h3>
     </div>
