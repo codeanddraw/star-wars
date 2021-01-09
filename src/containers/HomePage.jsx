@@ -22,7 +22,6 @@ const useStyles = makeStyles((theme) => ({
     textDecoration: 'none',
     fontSize: '2em',
     cursor: 'pointer'
-
   }
 }));
 

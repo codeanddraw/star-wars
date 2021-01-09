@@ -42,6 +42,7 @@ function useFetch(urls) {
   const [loading, setLoading] = useState(false)
   const [hasError, setHasError] = useState(false)
 
+  
   useEffect(() => {
     setLoading(true)
     const arr = urls.map(url => fetch(url))
@@ -65,9 +66,9 @@ function useFetch(urls) {
 
 const CharacterPage = (props) => {
   const classes = useStyles();
-  const charactersArray = props.location.state.filmCharacters,
-    filmTitle = props.location.state.filmTitle,
-    filmYear = props.location.state.filmYear.split('-')[0]
+  const charactersArray = (props.location.state && props.location.state.filmCharacters) || [],
+    filmTitle = (props.location.state && props.location.state.filmTitle) || [],
+    filmYear = (props.location.state && props.location.state.filmYear.split('-')[0]) || []
 
   const [response, loading, hasError] = useFetch(charactersArray)
 
