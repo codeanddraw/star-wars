@@ -1,25 +1,11 @@
 import React from 'react';
-import ReactDOM from "react-dom";
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route
-} from "react-router-dom";
+import { Switch, Route } from "react-router-dom";
 import HomePage from "./containers/HomePage"
+import CharacterPage from "./containers/CharacterPage"
 
 export default function App() {
- 
-  return (
-    <div>
-      <Switch>
-        <Route path="/:film">
-          
-        </Route>
-
-        <Route path="/">
-          <HomePage />
-        </Route>
+  return <Switch>
+        <Route path="/home/:film" component={CharacterPage} />
+        <Route path="/home" component={HomePage} />
       </Switch>
-    </div>
-  );
 }

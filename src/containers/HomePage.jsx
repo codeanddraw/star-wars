@@ -2,6 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from "react-router-dom";
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -47,13 +54,32 @@ export default function HomePage() {
   const classes = useStyles();
   const [response, loading, hasError] = useFetch("https://swapi.dev/api/films")
 
+  const handleClick = (e,d) => {
+    console.log('clicked',e.target,d.characters)
+    
+  }
+
   return (
     <div className={classes.root}>
       <Grid container spacing={3}>
           
           {loading ? <div>Loading...</div> : (hasError ? <div>Error occured.</div> : 
           (response && response.length> 0 && response.map(d => 
-          <Grid item xs={12} ><Paper className={classes.paper}>{d.title}</Paper></Grid> 
+          <Grid item xs={12} >
+            <Paper className={classes.paper} onClick={e => handleClick(e,d)}>
+            <Link 
+              to={{
+                pathname: `/home/${d.title}`, 
+                state: { 
+                  filmCharacters: d.characters,
+                  filmTitle: d.title,
+                  filmYear: d.year
+                }
+              }}>
+              {d.title}
+            </Link>
+            </Paper>
+          </Grid> 
           )))}
       </Grid> 
     </div>
