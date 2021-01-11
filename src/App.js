@@ -1,11 +1,12 @@
 import React from 'react';
-import { Switch, Route, Redirect, useLocation } from "react-router-dom";
-import HomePage from "./containers/HomePage";
-import CharacterPage from "./containers/CharacterPage";
-import "./App.css";
-import Header from './components/Header';
-import { makeStyles } from '@material-ui/core/styles';
+import { Switch, Route, Redirect, useLocation } from "react-router-dom"
+import { makeStyles } from '@material-ui/core/styles'
+import HomePage from "./containers/HomePage"
+import CharacterPage from "./containers/CharacterPage"
+import Header from './components/Header'
 
+
+// Styles applied to No route container
 const useStyles = makeStyles((theme) => ({
   error: {
     color: 'antiquewhite',
@@ -15,26 +16,26 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
+//Functional component to render No route container
 function NoMatch() {
   const classes = useStyles();
   let location = useLocation();
 
-  return (
-    <div>
+  return <>
       <h3 className={classes.error}>
         No match for <code>{location.pathname}</code>
       </h3>
-    </div>
-  );
+    </>
 }
 
+//Functional component to render App Container with routes
 export default function App() {
   return <>
     <Header />
     <Switch>
-      <Route path="/home/:film" component={CharacterPage} />
       <Route path="/home" component={HomePage} />
       <Redirect from="/" to="/home" exact /> 
+      <Route path="/home/:film" component={CharacterPage} />
       <Route path="*" component={NoMatch} />
     </Switch>
   </>
