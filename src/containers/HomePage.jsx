@@ -1,90 +1,98 @@
-import React, { useState, useEffect } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid';
-import {
-  Link
-} from "react-router-dom";
+import React, { useState, useEffect } from 'react'
+import { Link } from "react-router-dom"
+import { makeStyles } from '@material-ui/core/styles'
+import Paper from '@material-ui/core/Paper'
+import Grid from '@material-ui/core/Grid'
+import Loading from '../components/Loading'
 
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-    backgroundColor: 'black'
-  },
+// Styles applied to HomePage
+const useStyles = makeStyles(() => ({
   paper: {
-    padding: theme.spacing(2),
     textAlign: 'center',
     backgroundColor: 'black'
   },
-  text: {
+  filmName: {
     color: '#fff',
     textDecoration: 'none',
-    fontSize: '2em',
+    fontSize: '2rem',
     cursor: 'pointer'
+  },
+  pageError: {
+    color: '#fff',
+    justifyContent: 'center',
+    display: 'flex',
+    fontSize: '2rem',
+    fontWeight: '500'
   }
 }));
 
+//Custom Hook to fetch films
 function useFetch(url) {
-  console.log(url)
   const [response, setResponse] = useState(null)
   const [loading, setLoading] = useState(false)
   const [hasError, setHasError] = useState(false)
 
   useEffect(() => {
     setLoading(true)
-
     const controller = new AbortController();
-    const options = {
+    var requestOptions = {
       method: 'GET',
-      signal: controller.signal,
-    }
+      signal: controller.signal
+    };
+    const timeoutId = setTimeout(() => controller.abort(), 10000);
 
-    const timeoutId = setTimeout(() => controller.abort(), 10000); //Set timeout for fetch
-
-    fetch(url, options)
-      .then(res => res.json())
-      .then(data => {
-        console.log(data.results)
-        setResponse(data.results);
-        setLoading(false); // Sets loading status to false when data loads
-      })
+    fetch(url, requestOptions).then(response => {
+      return response.json()
+    }).then(data => {
+      console.log(data)
+      setResponse(data);
+      setLoading(false);
+    })
       .catch(error => {
-        console.error(error, 'Timeout exceeded, unable to fetch movie data')
+        console.log('error', error)
         setHasError(true)
-      })
+        setLoading(false)
+      });
+
+    clearTimeout(timeoutId)
   }, [url])
+
   return [response, loading, hasError]
 }
 
+//Functional component to render Page Container
 export default function HomePage() {
   const classes = useStyles();
-  const [response, loading, hasError] = useFetch("https://swapi.dev/api/films")
+  const [response, loading, hasError] = useFetch("https://swapi-deno.azurewebsites.net/api/films")
+  
+  //Render progress indicator while the api fetches response
+  const renderLoader = () => <Loading />
+  
+  //Render Error text if error occurs in the fetch operation
+  const renderErrorUI = () => <div className={classes.pageError}>Error occured.</div>
 
-  return (
-    <div className={classes.root}>
-      <Grid container spacing={3}>
+  if (loading) return renderLoader()
 
-        {loading ? <div>Loading...</div> : (hasError ? <div>Error occured.</div> :
-          (response && response.length > 0 && response.map(d =>
-            <Grid item xs={12} >
-              {console.log(d)}
-              <Paper className={classes.paper}>
-                <Link className={classes.text}
-                  to={{
-                    pathname: `/home/${d.title}`,
-                    state: {
-                      filmCharacters: d.characters,
-                      filmTitle: d.title,
-                      filmYear: d.release_date
-                    }
-                  }}>
-                  {d.title}
-                </Link>
-              </Paper>
-            </Grid>
-          )))}
+  else if (hasError) return renderErrorUI()
+
+  else return <Grid container spacing={6}>
+    {response && response.length > 0 && response.map((d, index) =>
+      <Grid key={index} item xs={12} >
+        <Paper key={index} className={classes.paper}>
+          {/* Hyperlink on each film */}
+          <Link className={classes.filmName}
+            to={{
+              pathname: `/home/${d.title}`,
+              state: {
+                filmCharacters: d.characters,
+                filmTitle: d.title,
+                filmYear: d.release_date
+              }
+            }}>
+            {d.title}
+          </Link>
+        </Paper>
       </Grid>
-    </div>
-  );
+    )}
+  </Grid>
 }
