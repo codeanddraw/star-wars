@@ -33,9 +33,9 @@ export default function App() {
   return <>
     <Header />
     <Switch>
-      <Route path="/home/:film" component={CharacterPage} />
-      <Route path="/home" component={HomePage} />
-      <Redirect from="/" to="/home" exact /> 
+      <Route path="/star-wars/:film" component={CharacterPage} />
+      <Route path="/star-wars" component={HomePage} />
+      <Redirect from="/" to="/star-wars" exact /> 
       <Route path="*" component={NoMatch} />
     </Switch>
   </>
