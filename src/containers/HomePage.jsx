@@ -82,7 +82,7 @@ export default function HomePage() {
           {/* Hyperlink on each film */}
           <Link className={classes.filmName}
             to={{
-              pathname: `/home/${d.title}`,
+              pathname: `/star-wars/${d.title}`,
               state: {
                 filmCharacters: d.characters,
                 filmTitle: d.title,
